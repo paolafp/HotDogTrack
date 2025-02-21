@@ -1,8 +1,9 @@
+import os
 import pandas as pd
 import folium
 
 # Read CSV file with proper parsing
-csv_path = r'C:/Users/Paola/kDrive/BHT/Geosensorik/Hot Dog Track/csv/gps_data_2025-02-19.csv'
+csv_path = '/Hot Dog Track/csv/gps_data_2025-02-19.csv'
 gps_df = pd.read_csv(csv_path)
 
 # Convert coordinates to numeric and clean data
@@ -51,8 +52,30 @@ if not gps_df.empty:
             icon=folium.Icon(color='red', prefix='fa', icon='flag-checkered')
         ).add_to(m)
     
+    # Retrieve the map’s variable name (e.g., "map_12345abc")
+    map_var = m.get_name()
+
+    # Added Java Script Block For the Dashboard: Expose the map object by adding a script element that sets window.myMap
+    script = f"""
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {{
+          // The map object created by Folium is named {map_var}.
+          window.myMap = {map_var};
+          console.log("myMap has been set:", window.myMap);
+          window.highlightCircle = null; // For tracking current highlight.
+      }});
+    </script>
+    """
+    m.get_root().html.add_child(folium.Element(script))
+
+    # Ensure the static directory exists before saving the file
+    static_dir = os.path.join(os.getcwd(), 'static')
+    os.makedirs(static_dir, exist_ok=True)  # Create 'static' directory if it doesn't exist
+
     # Save map with proper encoding
-    m.save('gps_track.html')
-    print("Map successfully created with filtered data")
+    output_path = os.path.join(static_dir, 'folium_map.html')
+    m.save(output_path)
+    
+    print(f"Map successfully created and saved to {output_path}")
 else:
     print("No valid GPS coordinates remaining after filtering")

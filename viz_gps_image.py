@@ -8,7 +8,7 @@ tilemapbase.start_logging()
 tilemapbase.init(create=True)
 
 # Step 2: Load and clean GPS data
-df_gps = pd.read_csv('gps_data_2025-02-19.csv', parse_dates=['timestamp'])
+df_gps = pd.read_csv('/Hot Dog Track/csv/gps_data_2025-02-19.csv', parse_dates=['timestamp'])
 df_gps = df_gps[(df_gps['latitude'] != 0) & (df_gps['longitude'] != 0)]
 df_gps = df_gps.sort_values(by='timestamp')
 
@@ -42,6 +42,10 @@ osm_tiles = tilemapbase.tiles.build_OSM()
 plotter = tilemapbase.Plotter(extent, osm_tiles, width=1000)
 plotter.plot(ax, allow_large=True)
 
+# Remove axis labels
+ax.set_yticks([])
+ax.set_xticks([])
+
 # Step 7: Plot the aggregated points on the map 
 # Marker size (s) is scaled from total_time_spent (in seconds).
 # Adjust scaling_factor as needed for good visual sizes.
@@ -49,7 +53,7 @@ scaling_factor = 2
 scatter = ax.scatter(
     agg_data['x'], agg_data['y'],
     s=agg_data['total_time_spent'] / scaling_factor,
-    c=agg_data['avg_speed'], cmap='viridis',
+    c=agg_data['avg_speed'], cmap='viridis_r',
     alpha=0.8,
     label='Aggregated Spots'
 )

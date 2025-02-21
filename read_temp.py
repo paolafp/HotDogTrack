@@ -23,7 +23,7 @@ os.makedirs(data_directory, exist_ok=True)
 csv_filename = join(data_directory, f"temp_data_{date_str}.csv")
 
 try:
-    for i in range(30):
+    for i in range(15):
     
         # Capture the current timestamp
         current_time = datetime.now()
@@ -49,8 +49,8 @@ try:
         # The header is written only if the file does not exist.
         df_new.to_csv(csv_filename, mode="a", index=False, header=not os.path.exists(csv_filename))
         
-        # Wait for 1 second before the next reading
-        time.sleep(5)
+        # Wait for 2 second before the next reading
+        time.sleep(2)
 
 except KeyboardInterrupt:
     print("\nProgram terminated.")

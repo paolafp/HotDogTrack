@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-#hallo
-
 import os
 import pandas as pd
 from w1thermsensor import W1ThermSensor
@@ -15,23 +13,26 @@ sensor = W1ThermSensor()
 # Single dictionary to store all sensor readings
 data = {"timestamp": [], "temperature_c": []}
 
+# Capture the date
+current_time = datetime.now()
+date_str = current_time.strftime("%Y-%m-%d")
+
+# Create a daily filename and a file directory
+data_directory = "/home/paola/CSV_data/"
+os.makedirs(data_directory, exist_ok=True)
+csv_filename = join(data_directory, f"temp_data_{date_str}.csv")
+
 try:
-    while True:
-               
+    for i in range(30):
+    
         # Capture the current timestamp
-        current_time = datetime.now()#.strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now()
         timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
-        date_str = current_time.strftime("%Y-%m-%d")
 
-        # Create a daily filename and a file directory
-        data_directory = "/home/paola/CSV_data/"
-        os.makedirs(data_directory, exist_ok=True)
-        csv_filename = join(data_directory, f"temp_data_{date_str}.csv")
-        
         # Read temperature in Celsius
-        temperature_c = round(sensor.get_temperature(),2)
+        temperature_c = round(sensor.get_temperature(),1)
 
-        print(f"UTC: {timestamp_str} - Temperature: {temperature_c:.2f}°C")
+        print(f"UTC: {timestamp_str} - Temperature: {temperature_c:.1f}°C")
         
         # Update the dictionary with the new reading
         data["timestamp"].append(timestamp_str)
@@ -49,7 +50,7 @@ try:
         df_new.to_csv(csv_filename, mode="a", index=False, header=not os.path.exists(csv_filename))
         
         # Wait for 1 second before the next reading
-        time.sleep(1)
+        time.sleep(5)
 
 except KeyboardInterrupt:
     print("\nProgram terminated.")

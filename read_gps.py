@@ -9,6 +9,15 @@ import os
 from datetime import datetime
 from os.path import join
 
+# Get the date
+current_time = datetime.now()
+date_str = current_time.strftime("%Y-%m-%d")
+
+# Create a daily filename and a file directory
+data_directory = "/home/paola/CSV_data/"
+os.makedirs(data_directory, exist_ok=True)
+csv_filename = join(data_directory, f"gps_data_{date_str}.csv")
+
 def open_serial_port():
     """Try to open the serial port with different common baud rates."""
     baud_rates = [115200]
@@ -41,17 +50,10 @@ def main():
                         
                         # Handle NMEA sentences that start with "$GPRMC"
                         if line.startswith("$GPRMC"):
-                            # Get the current timestamp as a datetime object
+                            
+                            # Get the current timestamp as a datetime object and format it
                             current_time = datetime.now()
-                            
-                            # Format the timestamp and date parts
                             timestamp_str = current_time.strftime("%Y-%m-%d %H:%M:%S")
-                            date_str = current_time.strftime("%Y-%m-%d")
-                            
-                            # Create a daily filename and a file directory
-                            data_directory = "/home/paola/CSV_data/"
-                            os.makedirs(data_directory, exist_ok=True)
-                            csv_filename = join(data_directory, f"gps_data_{date_str}.csv")
                             
                             # Parse the NMEA sentence using pynmea2
                             msg = pynmea2.parse(line)

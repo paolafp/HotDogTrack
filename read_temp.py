@@ -13,17 +13,19 @@ sensor = W1ThermSensor()
 # Single dictionary to store all sensor readings
 data = {"timestamp": [], "temperature_c": []}
 
-# Capture the date
+# Capture the date for daily log file
 current_time = datetime.now()
 date_str = current_time.strftime("%Y-%m-%d")
 
 # Create a daily filename and a file directory
+# Standard pi folder structure, replace "paola" with your user name
 data_directory = "/home/paola/CSV_data/"
 os.makedirs(data_directory, exist_ok=True)
 csv_filename = join(data_directory, f"temp_data_{date_str}.csv")
 
+# Measuring for 5 mins every 5 seconds 
 try:
-    for i in range(15):
+    for i in range(60):
     
         # Capture the current timestamp
         current_time = datetime.now()
@@ -49,8 +51,8 @@ try:
         # The header is written only if the file does not exist.
         df_new.to_csv(csv_filename, mode="a", index=False, header=not os.path.exists(csv_filename))
         
-        # Wait for 2 second before the next reading
-        time.sleep(2)
+        # Wait for 5 second before the next reading
+        time.sleep(5)
 
 except KeyboardInterrupt:
     print("\nProgram terminated.")

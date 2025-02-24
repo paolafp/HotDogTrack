@@ -14,28 +14,42 @@ current_time = datetime.now()
 date_str = current_time.strftime("%Y-%m-%d")
 
 # Create a daily filename and a file directory
+# Standard pi folder structure, replace "paola" with your user name
 data_directory = "/home/paola/CSV_data/"
 os.makedirs(data_directory, exist_ok=True)
 csv_filename = join(data_directory, f"gps_data_{date_str}.csv")
 
+
+# Establishing connection
 def open_serial_port():
+
     """Try to open the serial port with different common baud rates."""
-    baud_rates = [115200]
+    # Set the correct baud rate according to your sensor
+    # If you don't know it: fill the list with different baud rates and the loop will try them out
+    baud_rates = [115200] 
+
     for baud in baud_rates:
         try:
             print(f"Trying baud rate: {baud}")
+
+            # Check if "ttyACM0" is the correct serial port name with bash: ls /dev/tty*
             ser = serial.Serial('/dev/ttyACM0', baud, timeout=1)
-            time.sleep(2)  # Wait for connection to establish
+
+            # Wait for connection to establish
+            time.sleep(2)  
             return ser
+        
         except Exception as e:
             print(f"Failed at {baud} baud: {e}")
     return None
 
+
 def main():
         
-    while True:  # Main loop that keeps the program running
+    while True:  # Keeps the main script run indefinitely - stopps only with bash: pkill -f read_gps.py 
         try:
             ser = open_serial_port()
+
             if not ser:     #automatic reconnection if open serial port fails
                 print("Could not open serial port. Retrying in 5 seconds...")
                 time.sleep(5)
@@ -67,7 +81,7 @@ def main():
                                 "GPRMC": [line],
                                 "latitude": [msg.latitude],
                                 "longitude": [msg.longitude],
-                                "Speed kmh": [msg.spd_over_grnd * 1.852]
+                                "Speed kmh": [msg.spd_over_grnd * 1.852] #raw sensor output is in knots 
                             })
                             
                             # Append the measurement to the CSV file.

@@ -9,6 +9,7 @@ sensor = W1ThermSensor()
 # Set temperature array
 temp_array = []
 
+# Collect temperature measurement for 5 seconds in temp_array
 for i in range(5):
     # Read temperature in Celsius
     temperature_c = round(sensor.get_temperature(),2)
@@ -21,4 +22,5 @@ mean_temp = mean(temp_array)
 # Capture the current timestamp
 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+# Prints mean temperature of the last 5 seconds
 print(f"UTC: {current_time} - Temperature: {mean_temp:.2f}°C")

@@ -3,6 +3,7 @@ import pandas as pd
 import folium
 
 # Read CSV file with proper parsing
+# Replace the filename with the one you'd wish to visualize
 csv_path = '/Hot Dog Track/csv/gps_data_2025-02-19.csv'
 gps_df = pd.read_csv(csv_path)
 
@@ -55,7 +56,7 @@ if not gps_df.empty:
     # Retrieve the map’s variable name (e.g., "map_12345abc")
     map_var = m.get_name()
 
-    # Added Java Script Block For the Dashboard: Expose the map object by adding a script element that sets window.myMap
+    # Added Java Script Block for the Dashboard: Expose the map object by adding a script element that sets window.myMap
     script = f"""
     <script>
       document.addEventListener("DOMContentLoaded", function() {{
@@ -73,6 +74,7 @@ if not gps_df.empty:
     os.makedirs(static_dir, exist_ok=True)  # Create 'static' directory if it doesn't exist
 
     # Save map with proper encoding
+    # info: this specific filename used in dashboard
     output_path = os.path.join(static_dir, 'folium_map.html')
     m.save(output_path)
     
